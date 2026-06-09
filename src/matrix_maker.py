@@ -4,10 +4,10 @@ import numpy as np
 
 from src.cycling_model import Cyclist
 
-cyclist = Cyclist(150, 60, 12)
 
+def create_time_matrix(wind_speed=0, wind_direction=0, **kwargs):
+    cyclist = Cyclist(**kwargs)
 
-def create_time_matrix(wind_speed=0, wind_direction=0):
     # read locations
     with open("locations.json", "r") as f:
         locations = json.load(f)
@@ -36,7 +36,9 @@ def create_time_matrix(wind_speed=0, wind_direction=0):
 
     return location_keys, matrix
 
-def create_distance_matrix():
+def create_distance_matrix(**kwargs):
+    cyclist = Cyclist(**kwargs)
+
     # read locations
     with open("locations.json", "r") as f:
         locations = json.load(f)
@@ -75,20 +77,3 @@ def add_dummy_nodes(location_keys, matrix):
     new_matrix[1:, 1:] = matrix
 
     return new_location_keys, new_matrix
-
-
-# # print(create_time_matrix())
-
-# file_name = "routes/" + "ADDINGTON" + "-" + "SUMNER" + ".json"
-# with open(file_name, "r") as f:
-#     route = json.load(f)
-
-# points = np.array(route["paths"][0]["points"]["coordinates"])
-# times = cyclist.approximate_distance_from_latlon(points[:-1], points[1:])
-
-# print(sum(times))
-
-# times = cyclist.time_to_travel(points[:-1], points[1:])
-
-# print(sum(times))
-

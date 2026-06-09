@@ -3,23 +3,31 @@ import numpy as np
 
 class Cyclist:
     g = 9.81  # gravitational acceleration in m/s^2
-    drive_train_loss = 0.02 # 0 = perfect efficiency 1 = total loss
-    area = 0.509 # m**2
-    air_density = 1.22601 # kg/m**3
-    cda = 0.4
-    coef_rolling_resistance = 0.005
-    max_speed = 45 / 3.6 # m/s, 45 km/h cap on speed to avoid unrealistic solutions for downhill segments
-    min_speed = 10 / 3.6 # m/s, 10 km/h minimum speed to avoid unrealistic solutions for uphill segments
     
     def __init__(
             self, 
-            power_output, 
-            weight, 
-            bike_weight, 
+            power_output=150, 
+            weight=70, 
+            bike_weight=10, 
+            drive_train_loss=0.02,
+            area=0.509,
+            air_density=1.22601,
+            cda=0.4,
+            coef_rolling_resistance=0.005,
+            max_speed=45,
+            min_speed=10
             ):
         self.power_output = power_output  # in watts
         self.weight = weight  # in kg
         self.bike_weight = bike_weight  # in kg
+
+        self.drive_train_loss = drive_train_loss
+        self.area = area
+        self.air_density = air_density
+        self.cda = cda
+        self.coef_rolling_resistance = coef_rolling_resistance
+        self.max_speed = max_speed / 3.6
+        self.min_speed = min_speed / 3.6
 
     @property
     def total_weight(self):
