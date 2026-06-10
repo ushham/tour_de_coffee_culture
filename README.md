@@ -29,6 +29,11 @@ cycling_parameters = {
 }
 ```
 
+If you want to use Graphhopper to construct new routes between each cafe, add a `config.yaml` file with the following:
+
+```{yaml}
+api: YOUR_KEY
+```
 
 ## Assumptions
 ### Cycling model
@@ -40,7 +45,7 @@ Maximum and minimum speed limits have been added to prevent huge downhill speeds
 
 ### Routes
 
-Road surfaces are unchanging
+Road surfaces are assumed to be constant. This is clearly not true for some of the routes that are included in this.
 
 To reduce API calls, the routes between cafes have been assumed to be symmetric. This means the route taken from A -> B is the same as B -> A.
 
