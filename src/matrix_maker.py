@@ -5,7 +5,7 @@ import numpy as np
 from src.cycling_model import Cyclist
 
 
-def create_time_matrix(wind_speed=0, wind_direction=0, **kwargs):
+def create_time_matrix(wind_speed=0, wind_direction=0, corner_penilty=False, **kwargs):
     cyclist = Cyclist(**kwargs)
 
     # read locations
@@ -28,11 +28,19 @@ def create_time_matrix(wind_speed=0, wind_direction=0, **kwargs):
             route = json.load(f)
 
         points = np.array(route["paths"][0]["points"]["coordinates"])
-        times = cyclist.time_to_travel(points[:-1], points[1:], wind_speed=wind_speed, wind_direction=wind_direction)
+        times = cyclist.time_to_travel(np.asarray(points[:-1]), np.asarray(points[1:]), wind_speed=wind_speed, wind_direction=wind_direction)
         matrix[start_index, end_index] = sum(times)
 
-        times = cyclist.time_to_travel(points[::-1][:-1], points[::-1][1:], wind_speed=wind_speed, wind_direction=wind_direction)
+        if corner_penilty:
+            times = cyclist.cornering_time(np.asarray(points[:-1]), np.asarray(points[1:]))
+            matrix[start_index, end_index] += sum(times)
+
+        times = cyclist.time_to_travel(np.asarray(points[::-1][:-1]), np.asarray(points[::-1][1:]), wind_speed=wind_speed, wind_direction=wind_direction)
         matrix[end_index, start_index] = sum(times)
+
+        if corner_penilty:
+            times = cyclist.cornering_time(np.asarray(points[::-1][:-1]), np.asarray(points[::-1][1:]))
+            matrix[end_index, start_index] += sum(times)
 
     return location_keys, matrix
 
@@ -59,11 +67,41 @@ def create_distance_matrix(**kwargs):
             route = json.load(f)
 
         points = np.array(route["paths"][0]["points"]["coordinates"])
-        times = cyclist.approximate_distance_from_latlon(points[:-1], points[1:])
+        times = cyclist.approximate_distance_from_latlon(np.asarray(points[:-1]), np.asarray(points[1:]))
         matrix[start_index, end_index] = sum(times)
 
-        times = cyclist.approximate_distance_from_latlon(points[::-1][:-1], points[::-1][1:])
+        times = cyclist.approximate_distance_from_latlon(np.asarray(points[::-1][:-1]), np.asarray(points[::-1][1:]))
         matrix[end_index, start_index] = sum(times)
+
+    return location_keys, matrix
+
+
+def create_elevation_matrix():
+
+    # read locations
+    with open("locations.json", "r") as f:
+        locations = json.load(f)
+
+    location_keys = list(locations.keys())
+
+    files = os.listdir("routes")
+
+    matrix = np.zeros((len(location_keys), len(location_keys)))
+
+    for file in files:
+        start_key, end_key = file[:-5].split("-")
+        start_index = location_keys.index(start_key)
+        end_index = location_keys.index(end_key)
+
+        file_name = "routes/" + start_key + "-" + end_key + ".json"
+        with open(file_name, "r") as f:
+            route = json.load(f)
+
+        points = np.array(route["paths"][0]["points"]["coordinates"])[..., -1]
+        elev = points[1:] - points[:-1]
+        matrix[start_index, end_index] = sum(elev[elev > 0])
+
+        matrix[end_index, start_index] = -sum(elev[elev < 0])
 
     return location_keys, matrix
 
