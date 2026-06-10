@@ -51,3 +51,26 @@ To reduce API calls, the routes between cafes have been assumed to be symmetric.
 
 ### Weather
 When wind is included, it is included at the same rate, from the same direction, across all routes. In other-words, no local variation to wind direction or wind speed is taken into account.
+
+## Results
+The shortest possible route is 109.5km, with 870m of vertical elevation. Using a cycling model that is based off of my very average cycling ability, it should take me no less than 4.5 hours.
+
+The fastest way to do the loop is a little longer at 112km, but would take a whole 4minutes less than the shortest route, due to less climbing.
+
+If you want to get the fastest time possible (estimated at 4hr 12 mins for me), do the ride in a strong south-westerly wind (213° to be exact).
+
+Here is a summary table of distances and times for each wind direction:
+
+
+
+| Wind	| Time (min) | Distance (km) |	Elevation (m) |
+| --- | --- | --- | ---|
+| Shortest Distance | 274 |	109.5 |	870 |
+| Least Climbing | 295 | 125.8 | 552 |
+|No wind |	270 | 111.9 | 857 |
+| Northerly	| 258 | 110.5 |	843 |
+| Southerly	| 258 |	111.9 |	857 |
+| Westerly | 296 | 110.5 | 844 |
+| Easterly | 304 | 118.4 |	552 |
+| North Westerly | 275 | 110.5 | 844|
+| Best wind | 252 |111.9 |	857 |
